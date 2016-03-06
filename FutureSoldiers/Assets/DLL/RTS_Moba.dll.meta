@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: 1cebb58dd6f4e0848ac6e4f93868a583
+timeCreated: 1456344075
+licenseType: Free
+PluginImporter:
+  serializedVersion: 1
+  iconMap: {}
+  executionOrder:
+    RTS_Moba.Game_Root: -220
+  isPreloaded: 0
+  platformData:
+    Any:
+      enabled: 1
+      settings: {}
+    Editor:
+      enabled: 0
+      settings:
+        DefaultValueInitialized: true
+    WindowsStoreApps:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
