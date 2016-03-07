@@ -29,11 +29,13 @@ namespace RTS_Moba.Pathfind
 
         private JPS_Plus pf_Searcher;
 
+       // private FlowField flowField;
         Terrain terrain;
         //Pass a Map for the Pathfinder to Process
         public void Setup(bool[][] map, Terrain terrain)
         {
             pf_Searcher = new JPS_Plus(map);
+            //flowField = new FlowField(map);
 
             //For Reference
             this.terrain = terrain;
@@ -45,23 +47,24 @@ namespace RTS_Moba.Pathfind
             return pf_Searcher.Find_Path(start, end);
         }
 
-
-
         public bool isLocationWalkable(Vector3 location)
         {
             return isLocationWalkable((int)location.x, (int)location.z);
         }
         public bool isLocationWalkable(int x,int y)
         {
+
             return pf_Searcher.isWalkable(x, y);
         }
 
         public void Debug_Draw()
         {
-            pf_Searcher.Debug_Draw(terrain);
+           // pf_Searcher.Debug_Draw(terrain);
 
         }
 
+        public int width {  get { return terrain._width; } }
+        public int height { get { return terrain._height; } }
 
     }
 }

@@ -70,5 +70,20 @@ namespace RTS_Moba.Characters
             }
         }
 
+        public Character Get_CharAt(int x, int y)
+        {
+            int px = 0;
+            int py = 0;
+            for (int i = 0; i < _characters.Count; i++)
+            {
+                px = (int)_characters[i].Get_Location().x;
+                py = (int)_characters[i].Get_Location().z;
+
+                if (px == x && py == y)
+                    return _characters[i];
+            }
+            return null;
+        }
+
     }
 }

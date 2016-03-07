@@ -905,12 +905,7 @@ namespace RTS_Moba.Pathfind
             if (!isValid(startX, startY) || !isValid(goalX, goalY))
                 return pathToGoal;
 
-            //If Start == End then just return a list of one...
-            if (startX == goalX && startY == goalY)
-            {
-                pathToGoal.Add(new Vector3(goalX, mapFloorLevel, goalY));
-                return pathToGoal;
-            }
+
 
 
             //If our start location is a wall...return null
@@ -976,6 +971,14 @@ namespace RTS_Moba.Pathfind
                             break;
                         }
                     }
+            }
+
+
+            //If Start == End then just return a list of one...
+            if (startX == goalX && startY == goalY)
+            {
+                pathToGoal.Add(new Vector3( (float)(goalX)+0.5f, mapFloorLevel, (float)goalY + 0.5f));
+                return pathToGoal;
             }
 
             PathFindNode startNode = new PathFindNode();

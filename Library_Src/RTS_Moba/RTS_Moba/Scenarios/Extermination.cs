@@ -5,10 +5,13 @@ using System.Text;
 
 using UnityEngine;
 using RTS_Moba.Characters;
+using RTS_Moba.Characters.Enemies;
 
 using RTS_Moba.Controllers;
 using RTS_Moba;
 using RTS_Moba.Pathfind;
+using RTS_Moba.UI;
+using RTS_Moba.Projectiles;
 namespace RTS_Moba.Scenarios
 {
     class Extermination : IScenario
@@ -38,7 +41,7 @@ namespace RTS_Moba.Scenarios
 
             //Create Enemy AI
             //Setup Enemy Units
-            //Setup_EnemyAI();
+            Setup_EnemyAI();
         }
 
 
@@ -48,7 +51,7 @@ namespace RTS_Moba.Scenarios
             System.Random r = new System.Random();
             for (int i = 0; i < 10; i++)
             {
-                enemyAI = new Crawler();
+                enemyAI = new Guard();
 
                 int x = r.Next(0, 100);
                 int y = r.Next(0, 100);
@@ -57,7 +60,7 @@ namespace RTS_Moba.Scenarios
                     x = r.Next(0, 100);
                     y = r.Next(0, 100);
                 }
-                enemyAI.Spawn(new Vector3(x, 0.5f, y));
+                enemyAI.Spawn(new Vector3(x, 1, y));
             }
         }
 
@@ -95,6 +98,8 @@ namespace RTS_Moba.Scenarios
         //Called Via GameRoot
         public void Update(float time)
         {
+
+
             Scenario_STATE currentState = Get_GameState();
 
             if (currentState == Scenario_STATE.undecided)
@@ -104,6 +109,8 @@ namespace RTS_Moba.Scenarios
                 float timeInterval = 0;
                 while (time > 0)
                 {
+
+
                     timeInterval = Math.Min(maxTimeInterval, time);
                     time -= timeInterval;
 
@@ -115,6 +122,9 @@ namespace RTS_Moba.Scenarios
             {
                 Debug.LogError("You -" + currentState.ToString() + "-");
             }
+
+
+
 
             //Debug Draw once Per Update (Frame)
             Pathfinder.instance.Debug_Draw();
@@ -134,10 +144,19 @@ namespace RTS_Moba.Scenarios
 
         public void UpdateLogic(float time)
         {
-            //Process Player Input
+            //Reset any UI dependencies
+            LineManager.instance.ClearLines();
+            CircleManager.instance.Clear();
+            CircleManager.instance.Update(time);
+
+            //Process Character AI
             CharacterManager.instance.Update(time);
-            //Apply Game Logic Here
+
+            //Update Player Input
             playerController.Update(time);
+
+            ProjectileManager.instance.Update(time);
+
         }
 
 

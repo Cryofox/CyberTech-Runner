@@ -73,9 +73,10 @@ namespace RTS_Moba
             ChangeCursor(cursorTypes.select);
             PanCamera_Mouse(timeDelta);
 
-            //RightClick to Move
-            if (MouseInput.rightMouse_Down)
-            {
+
+
+
+
                 // 1 << 9 = Ignore all but 9
                 // ~(1<<9) = Ignore only 9, ~ = Complement.
                 int mask = (1 << 8); //Ignore all Layers except the CollisionPlane Layer
@@ -84,24 +85,30 @@ namespace RTS_Moba
                 RaycastHit hit;
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition),out hit, mask))
                 {
-                    moveArrow.transform.position = hit.point;
-                    moveArrow.GetComponent<Animation>().Rewind("Play");
-                    moveArrow.GetComponent<Animation>().Play("Play", PlayMode.StopAll);
+                    //Show Shields at location
+                    SquadController.Get_SquadPoint(1, hit.point);
+
+                    //RightClick to Move
+                    if (MouseInput.rightMouse_Down)
+                    {
+                        moveArrow.transform.position = hit.point;
+                        moveArrow.GetComponent<Animation>().Rewind("Play");
+                        moveArrow.GetComponent<Animation>().Play("Play", PlayMode.StopAll);
                    
-                    //Order the Character!
-                    if (inputState == InputState.attack)
-                    {
-                        arrowMat.SetColor("_EmisColor", Colors.RED);
-                        game.OrderCharacter(order_Types.attackMove, hit.point);
-                        inputState = InputState.normal;
-                    }
-                    else
-                    {
-                        arrowMat.SetColor("_EmisColor", Colors.BLUE);
-                        game.OrderCharacter(order_Types.move, hit.point);
+                        //Order the Character!
+                        if (inputState == InputState.attack)
+                        {
+                            arrowMat.SetColor("_EmisColor", Colors.RED);
+                            game.OrderCharacter(order_Types.attackMove, hit.point);
+                            inputState = InputState.normal;
+                        }
+                        else
+                        {
+                            arrowMat.SetColor("_EmisColor", Colors.BLUE);
+                            game.OrderCharacter(order_Types.move, hit.point);
+                        }
                     }
                 }
-            }
            if (MouseInput.leftMouse_Down && inputState == InputState.attack)
                 inputState = InputState.normal;
 

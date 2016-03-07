@@ -8,10 +8,13 @@ using RTS_Moba.Pathfind;
 namespace RTS_Moba.Characters
 {
     public enum Faction { player, ai}
+    public enum AlertLevel {green, yellow, orange,red}
     public class Character
     {
         public Faction faction;
         public GameObject go;
+        public GameObject projectileAnchor;
+        protected Animator animator;
 
         protected Vector3 location;
 
@@ -88,7 +91,7 @@ namespace RTS_Moba.Characters
 
 
         //
-        void Update_Orders(float timeDelta)
+        protected virtual void Update_Orders(float timeDelta)
         {
             if (currentOrder == order_Types.move && targetLocation != location)
             {
@@ -197,7 +200,7 @@ namespace RTS_Moba.Characters
 
 
 
-        float attackCooldown = 0;
+        protected float attackCooldown = 0;
         void Attack(float timeDelta)
         {
             if (attackCooldown >= attackSpeed)
@@ -207,13 +210,15 @@ namespace RTS_Moba.Characters
             }
         }
 
-        List<Vector3> pathToGoal = new List<Vector3>();
+        protected List<Vector3> pathToGoal = new List<Vector3>();
 
 
 
 
-        void Move(float timeDelta, Vector3 goalLocation)
+        protected virtual void Move(float timeDelta, Vector3 goalLocation)
         {
+
+            /*
             //Grid Align the GLocation
             Vector3 modifiedGL = new Vector3((int)goalLocation.x,1, (int)goalLocation.z);
 
@@ -245,7 +250,7 @@ namespace RTS_Moba.Characters
 
 
 
-
+            */
 
         }
 
@@ -276,7 +281,7 @@ namespace RTS_Moba.Characters
 
 
 
-        public virtual void Spawn(Vector3 spawnLocation)
+        public void Spawn(Vector3 spawnLocation)
         {
             //Create Reference & Spawn Object
             go = GameObject.Instantiate(ResourceManager.Get_Character(this.GetType().Name), spawnLocation, Quaternion.identity) as GameObject;
@@ -285,7 +290,40 @@ namespace RTS_Moba.Characters
             //Create the UI Element and provide reference for update.
             healthBar = new HealthBar(this);
             fText = new FloatingText(this);
+            animator = go.GetComponent<Animator>();
+
+            projectileAnchor = FindProjectileAnchor();
+           // Debug.LogError("Projectile Anchor =" + projectileAnchor);
+            go.name = this.GetType().Name + faction;
         }
+
+        GameObject FindProjectileAnchor()
+        {
+            Transform transform = RecursiveSearch("Projectile_Anchor", go.transform);
+            if (transform == null)
+                return null;
+            else
+                return transform.gameObject;
+        }
+
+        //Recursive Search...
+        Transform RecursiveSearch(string name, Transform transform)
+        {
+            if (transform.name == name)
+                return transform;
+
+            Transform t = null;
+            foreach (Transform child in transform)
+            {
+                t = RecursiveSearch(name, child);
+                if (t != null && t.name == name)
+                    return t;
+
+            }
+
+            return null;
+        }
+
 
 
         //Location Based Order
@@ -294,6 +332,13 @@ namespace RTS_Moba.Characters
         //AttackMove to "x,y,z"
         public void OrderCharacter(order_Types order, Vector3 location)
         {
+            location.y = 1;
+            location.x = (int)location.x;
+            location.z = (int)location.z;
+
+            location.x += 0.5f;
+            location.z += 0.5f;
+
             currentOrder = order;
             targetLocation = location;
         }
